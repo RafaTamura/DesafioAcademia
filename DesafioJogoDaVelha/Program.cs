@@ -5,187 +5,211 @@
     {
         static void Main(string[] args)
         {
-            int jogador, linha, coluna, igual;
-            int i, j;
             int[,] jogo = CriarTabuleiro();
+            int jogador = 1, linha, coluna;
+            bool jogando = true;
 
-
-            // Como vai rolar
-            // Recebeu a informação do usuário
-            Console.WriteLine("Jogo da Velha!");
-            Console.WriteLine("Escolha qual jogador você quer ser, 1 = O e 2 = X ");
-            jogador = int.Parse(Console.ReadLine());
-
-            //Escolher a posição
-                for (int cont=0; cont<18; cont++)
+            while (jogando)
             {
-                cont++;
-                ValidJogador(jogador);
                 MostrarTabuleiro(jogo);
-                Posicao( out linha,out coluna, jogo, jogador);
                 jogador = MudarJogador(jogador);
-                Vencedor(jogo,out igual);
-                Console.Clear();
-            }
-
-
-
-            // Validando a posição
-            static void Posicao(out int linha, out int coluna, int[,]jogo, int jogador)
-            {
-                do
-                { 
-                    Console.WriteLine("Digite a linha: ");
-                    linha = int.Parse(Console.ReadLine());
-                    Console.WriteLine("Digite a coluna: ");
-                    coluna = int.Parse(Console.ReadLine());
-
-                    if (jogo[linha, coluna] != ' ')
-                    {
-                        Console.WriteLine("Opa! Você já escolheu aqui! Digite outra posição. ");
-                    }
-                } while (jogo[linha, coluna] != ' ');
+                Console.WriteLine($"Jogador {jogador}, insira a linha: ");
+                linha = int.Parse(Console.ReadLine());
+                Console.WriteLine($"Jogador {jogador}, insira a coluna: ");
+                coluna = int.Parse(Console.ReadLine());
+                if (jogo[linha, coluna] == 0)
                 {
                     jogo[linha, coluna] = jogador;
-
-                    MostrarTabuleiro(jogo);
-                }
-            }
-
-                MostrarTabuleiro(jogo);
-
-                if (Vencedor(jogo, out igual)){
-                if (igual == 222)
-                {
-                    Console.WriteLine("O vencedor é o X!");
-
-                } else if (igual == 111)
-                {
-                    Console.WriteLine("O vencedor é a O!");
-
-                }
-
-         
-            }
-            // Criando a matriz/Jogo Da velha
-            for (i = 0; i < 3; i++)
-            {
-                for (j = 0; j < 3; j++)
-                {
-                }
-            }
-        }
-         // Para alternar os jogadores
-         static int MudarJogador(int jogador){
-             if (jogador == 1){
-                 Console.WriteLine("É a vez do jogador X");
-                 return 2;
-             }else {
-                 Console.WriteLine("É a vez do jogador O");
-                return 1;
-             }
-        }
-        //Validar o usuário 
-        static int ValidJogador(int jogador)
-        {
-            if (jogador == 1)
-            {
-                Console.WriteLine("É a vez da O");
-                return 1;
-            }
-            else if (jogador == 2)
-            {
-                Console.WriteLine("É a vez do X");
-                return 2;
-            }
-            else
-            {
-                Console.WriteLine("Insira um valor válido, 1 ou 2");
-                return 3;
-            }
-        }
-
-        // Parte visual do Jogo da velha, foi mais dificíl do que imaginava
-        static void MostrarTabuleiro(int[,] jogo)
-        {
-            Console.WriteLine("   0   1   2");
-            for (int i = 0; i < 3; i++)
-            {
-                Console.Write(i+ "->");
-                for (int j = 0; j < 3; j++)
-                {
-                    if (jogo[i, j] == 1)
+                    if (Vencedor(jogo))
                     {
-                        Console.Write("[O]");
+                        jogando = false;
+                        Console.WriteLine($"O jogador {jogador} venceu!");
                     }
-                    else if (jogo[i, j] == 2)
+                    else if (Empate(jogo))
                     {
-
-                        Console.Write("[X]");
-                    }
-                    else
-                    {
-                        Console.Write("[ ]");
+                        jogando = false;
+                        Console.WriteLine("Deu Velha!!");
                     }
                 }
+                else
+                {
+                    Console.WriteLine("Aqui já foi hein, escolha outra posição. ");
+                }
+            }
+            MostrarTabuleiro(jogo);
+            //Empate
+            static bool Empate(int[,] jogo)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    for (int j = 0; j < 3; j++)
+                    {
+                        if (jogo[i, j] == 0)
+                        {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
+            // Para alternar os jogadores
+            static int MudarJogador(int jogador)
+            {
+                if (jogador == 1)
+                {
+                    Console.WriteLine("É a vez do jogador X");
+                    return 2;
+                }
+                else
+                {
+                    Console.WriteLine("É a vez do jogador O");
+                    return 1;
+                }
+            }
+            // Parte visual do Jogo da velha, foi mais dificíl do que imaginava
+            static void MostrarTabuleiro(int[,] jogo)
+            {
+                Console.WriteLine("   0   1   2");
+                for (int i = 0; i < 3; i++)
+                {
+                    Console.Write(i + "->");
+                    for (int j = 0; j < 3; j++)
+                    {
+                        if (jogo[i, j] == 1)
+                        {
+                            Console.Write("[O]");
+                        }
+                        else if (jogo[i, j] == 2)
+                        {
+
+                            Console.Write("[X]");
+                        }
+                        else
+                        {
+                            Console.Write("[ ]");
+                        }
+                    }
                     Console.WriteLine();
+                }
             }
-        }
-
-        //Contador para a montagem do Jogo da velha
-        static int[,] CriarTabuleiro()
-        {
-            int[,] jogo = new int[3, 3];
-            for (int i = 0; i < 3; i++)
+            //Contador para a montagem do Jogo da velha
+            static int[,] CriarTabuleiro()
             {
+                int[,] jogo = new int[3, 3];
+                //for (int i = 0; i < 3; i++)
+                //{
+                //    for (int j = 0; j < 3; j++)
+                //    {
+                //        (jogo[i, j] = ' ');
+                //    }
+                //}
+                return jogo;
+            }
+
+            //Vencedor!!
+
+            static bool Vencedor(int[,] jogo)
+            {
+                //verifica linhas
+                for (int i = 0; i < 3; i++)
+                {
+                    if (jogo[i, 0] == jogo[i, 1] && jogo[i, 1] == jogo[i, 2] && jogo[i, 0] != 0)
+                    {
+                        return true;
+                    }
+                }
+                //verifica colunas
                 for (int j = 0; j < 3; j++)
                 {
-                    Convert.ToChar(jogo[i, j] = ' ');
+                    if (jogo[0, j] == jogo[1, j] && jogo[1, j] == jogo[2, j] && jogo[0, j] != 0)
+                    {
+                        return true;
+                    }
                 }
-            }
-            return jogo;
-        }
-
-        //Vencedor!!
-        static bool Vencedor(int[,] jogo, out int igual)
-        {
-                igual = 0;
-            for (int venc = 0; venc < 8; venc++)
-            {
-                switch (venc)
-                {
-                    case 0:
-                        igual = jogo[0, 0] + jogo[1, 0] + jogo[2, 0];
-                        break;
-                    case 1:
-                        igual = jogo[0, 0] + jogo[1, 1] + jogo[2, 2];
-                        break;
-                    case 2:
-                        igual = jogo[0, 0] + jogo[0, 1] + jogo[0, 2];
-                        break;
-                    case 3:
-                        igual = jogo[1, 0] + jogo[1, 1] + jogo[1, 2];
-                        break;
-                    case 4:
-                        igual = jogo[2, 0] + jogo[2, 1] + jogo[2, 2];
-                        break;
-                    case 5:
-                        igual = jogo[0, 2] + jogo[1, 2] + jogo[2, 2];
-                        break;
-                    case 6:
-                        igual = jogo[0, 2] + jogo[1, 1] + jogo[2, 0];
-                        break;
-                    case 7:
-                        igual = jogo[0, 1] + jogo[1, 1] + jogo[2, 1];
-                        break;
-                }
-                if (igual == 222 || igual == 111)
+                // Verifica diagonal principal
+                if (jogo[0, 0] == jogo[1, 1] && jogo[1, 1] == jogo[2, 2] && jogo[0, 0] != 0)
                 {
                     return true;
                 }
-            }
-            return false;
-        }
-        }
 
+                // Verifica diagonal secundária
+                if (jogo[0, 2] == jogo[1, 1] && jogo[1, 1] == jogo[2, 0] && jogo[0, 2] != 0)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
     }
+}
+            //---------------------------------------------------------------------------------------------------------------------------------------------
+        //Partes que quero implementar porém estou com problemas       
+
+
+
+//            // Validando a posição
+//            static void Posicao(out int linha, out int coluna, int[,] jogo, int jogador)
+//            {
+//                do
+//                {
+//                    Console.WriteLine("Digite a linha: ");
+//                    linha = int.Parse(Console.ReadLine());
+//                    Console.WriteLine("Digite a coluna: ");
+//                    coluna = int.Parse(Console.ReadLine());
+
+//                    if (jogo[linha, coluna] != ' ')
+//                    {
+//                        Console.WriteLine("Opa! Você já escolheu aqui! Digite outra posição. ");
+//                    }
+//                } while (jogo[linha, coluna] != ' ');
+//                {
+//                    jogo[linha, coluna] = jogador;
+
+//                    MostrarTabuleiro(jogo);
+//                }
+//            }
+
+//            MostrarTabuleiro(jogo);
+
+//            if (Vencedor(jogo, out igual))
+//            {
+//                if (igual == 222)
+//                {
+//                    Console.WriteLine("O vencedor é o X!");
+
+//                }
+//                else if (igual == 111)
+//                {
+//                    Console.WriteLine("O vencedor é a O!");
+
+//                }
+
+
+//            }
+//        }
+//        //Validar o usuário 
+//        static int ValidJogador(int jogador)
+//        {
+//            if (jogador == 1)
+//            {
+//                Console.WriteLine("É a vez da O");
+//                return 1;
+//            }
+//            else if (jogador == 2)
+//            {
+//                Console.WriteLine("É a vez do X");
+//                return 2;
+//            }
+//            else
+//            {
+//                Console.WriteLine("Insira um valor válido, 1 ou 2");
+//                return 3;
+//            }
+//        }
+
+
+
+//    }
+//}
