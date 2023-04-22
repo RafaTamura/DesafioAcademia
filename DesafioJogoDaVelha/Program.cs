@@ -5,7 +5,7 @@
     {
         static void Main(string[] args)
         {
-            int jogador, linha, coluna;
+            int jogador, linha, coluna, igual;
             int i, j;
             int[,] jogo = CriarTabuleiro();
 
@@ -15,6 +15,7 @@
             Console.WriteLine("Jogo da Velha!");
             Console.WriteLine("Escolha qual jogador você quer ser, 1 = O e 2 = X ");
             jogador = int.Parse(Console.ReadLine());
+
             //Escolher a posição
                 for (int cont=0; cont<18; cont++)
             {
@@ -23,6 +24,7 @@
                 MostrarTabuleiro(jogo);
                 Posicao( out linha,out coluna, jogo, jogador);
                 jogador = MudarJogador(jogador);
+                Vencedor(jogo,out igual);
                 Console.Clear();
             }
 
@@ -32,7 +34,7 @@
             static void Posicao(out int linha, out int coluna, int[,]jogo, int jogador)
             {
                 do
-                {
+                { 
                     Console.WriteLine("Digite a linha: ");
                     linha = int.Parse(Console.ReadLine());
                     Console.WriteLine("Digite a coluna: ");
@@ -50,6 +52,21 @@
                 }
             }
 
+                MostrarTabuleiro(jogo);
+
+                if (Vencedor(jogo, out igual)){
+                if (igual == 222)
+                {
+                    Console.WriteLine("O vencedor é o X!");
+
+                } else if (igual == 111)
+                {
+                    Console.WriteLine("O vencedor é a O!");
+
+                }
+
+         
+            }
             // Criando a matriz/Jogo Da velha
             for (i = 0; i < 3; i++)
             {
@@ -130,6 +147,45 @@
         }
 
         //Vencedor!!
-    
+        static bool Vencedor(int[,] jogo, out int igual)
+        {
+                igual = 0;
+            for (int venc = 0; venc < 8; venc++)
+            {
+                switch (venc)
+                {
+                    case 0:
+                        igual = jogo[0, 0] + jogo[1, 0] + jogo[2, 0];
+                        break;
+                    case 1:
+                        igual = jogo[0, 0] + jogo[1, 1] + jogo[2, 2];
+                        break;
+                    case 2:
+                        igual = jogo[0, 0] + jogo[0, 1] + jogo[0, 2];
+                        break;
+                    case 3:
+                        igual = jogo[1, 0] + jogo[1, 1] + jogo[1, 2];
+                        break;
+                    case 4:
+                        igual = jogo[2, 0] + jogo[2, 1] + jogo[2, 2];
+                        break;
+                    case 5:
+                        igual = jogo[0, 2] + jogo[1, 2] + jogo[2, 2];
+                        break;
+                    case 6:
+                        igual = jogo[0, 2] + jogo[1, 1] + jogo[2, 0];
+                        break;
+                    case 7:
+                        igual = jogo[0, 1] + jogo[1, 1] + jogo[2, 1];
+                        break;
+                }
+                if (igual == 222 || igual == 111)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        }
+
     }
-}
