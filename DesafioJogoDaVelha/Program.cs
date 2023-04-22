@@ -6,8 +6,11 @@
         static void Main(string[] args)
         {
             int[,] jogo = CriarTabuleiro();
-            int jogador = 1, linha, coluna;
+            int jogador, linha, coluna;
             bool jogando = true;
+
+            Console.WriteLine("Selecione qual jogador começa, 1 = X e 2 = O");
+            jogador = int.Parse(Console.ReadLine());
 
             while (jogando)
             {
