@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Design;
+using System.Reflection.Metadata.Ecma335;
 using System.Xml;
 
 namespace JogoDaVelha
@@ -67,11 +68,12 @@ namespace JogoDaVelha
                     }
                     else
                     {
-                        Console.WriteLine("Insira um valor válido, 1 ou 2");
+                        Console.Clear();
+                        Console.WriteLine("O valor estava incorreto, digite 1 ou 2");
                     }
                 }
             }
-            //JogadaContraPc porém é a vez do usuário
+            //Jogada contra o Pc porém é a vez do usuário
         static void JogadaPlayer(string[,] jogo)
         {
             int posicaoJogador;
@@ -84,6 +86,9 @@ namespace JogoDaVelha
                 posicaoJogador = int.Parse(Console.ReadLine());
                 posicaoValida = ValidarPosicao(jogo,posicaoJogador);
             } while (!posicaoValida);
+
+            //é uma fórmula para transformar números inteiros em posições de matriz
+            //Porém a matriz precisa ser uma "perfeita"
 
             int linha = (posicaoJogador - 1) / 3;
             int coluna = (posicaoJogador - 1) % 3;
@@ -119,10 +124,10 @@ namespace JogoDaVelha
             }
 
             //Player vs Player
-            static void Pvp(string[,] jogo, int cont = 0, string jogador = "X", bool venceu = false)
+            static void Pvp(string[,] jogo, int cont = 0, string jogador = "X", bool vitoria = false)
             {
                 int posicaoJogador;
-                while (cont < 9 && !venceu)
+                while (cont < 9 && !vitoria)
                 {
                     do
                     {
@@ -140,9 +145,9 @@ namespace JogoDaVelha
                     int linha = (posicaoJogador - 1) / 3;
                     int coluna = (posicaoJogador - 1) % 3;
                     jogo[linha, coluna] = jogador;
-                    venceu = JogoAcabou(jogo);
+                    vitoria = JogoAcabou(jogo);
 
-                    if (venceu)
+                    if (vitoria)
                     {
                         if (jogador == "X")
                         {
@@ -153,28 +158,23 @@ namespace JogoDaVelha
                             Console.WriteLine("O jogador O ganhou!");
                         }
                     }
-                    else if (cont == 8)
+                  
+
+                    jogador = MudaJogador(jogador);
+                        cont++;
+
+                    }
+                  if (cont == 9 && !vitoria)
                     {
                         Tabuleiro(jogo);
                         Console.WriteLine("Xiii deu velha");
                     }
-
-                    if (jogador == "X")
-                    {
-                        jogador = "O";
-                    }
-                    else
-                    {
-                        jogador = "X";
-                    }
-                    cont++;
                 }
-            }
 
             // PC vs Player
-            static void Pc(string[,] jogo, int cont = 0, string jogador = "O", bool venceu = false)
+            static void Pc(string[,] jogo, int cont = 0, string jogador = "O", bool vitoria = false)
             {
-                while (cont < 9 && !venceu)
+                while (cont < 9 && !vitoria)
                 {
                     if (jogador == "X")
                     {
@@ -182,12 +182,12 @@ namespace JogoDaVelha
                     }
                     else
                     {
-                        JogadaPc(jogo);
+                        Computador(jogo);
                     }
 
-                    venceu = JogoAcabou(jogo);
+                    vitoria = JogoAcabou(jogo);
 
-                    if (venceu)
+                    if (vitoria)
                     {
                         if (jogador == "X")
                         {
@@ -199,28 +199,33 @@ namespace JogoDaVelha
                             Console.WriteLine("A máquina ganhou de você, o mundo das máquinas está cada vez mais próximo");
                         }
                     }
-                    else if (cont == 8)
+                  
+                        jogador = MudaJogador(jogador);
+                        cont++;
+                }
+                  if (cont == 9 && !vitoria)
                     {
                         Console.WriteLine("Xiii deu velha");
                     }
-                    if (jogador == "X")
-                    {
-                        jogador = "O";
-                    }
-                    else
-                    {
-                        jogador = "X";
-                    }
-                    cont++;
+                }
+        }
+         //Alterna os jogadores a cada jogada
+           static string MudaJogador(string jogador)
+            {
+                if (jogador == "X")
+                {
+                return "O";
+                }
+                else
+                {
+                    return "X";
                 }
             }
-        }
-
         // Jogada vez do Computador
-        static void JogadaPc(string[,] jogo)
+        static void Computador(string[,] jogo)
         {
-            Random gerador = new Random();
             Console.WriteLine("Modo assistido");
+            Random gerador = new Random();
 
             while (true)
             {
@@ -252,14 +257,14 @@ namespace JogoDaVelha
             {
                 return true;
             }
-            // verifica se houve vitória nas colunas
+            // Vitória nas colunas
             if (jogo[0, 0] == jogo[1, 0] && jogo[1, 0] == jogo[2, 0] ||
                 jogo[0, 1] == jogo[1, 1] && jogo[1, 1] == jogo[2, 1] ||
                 jogo[0, 2] == jogo[1, 2] && jogo[1, 2] == jogo[2, 2])
             {
                 return true;
             }
-            // verifica se houve vitória nas diagonais
+            // Vitória nas diagonais
             if (jogo[0, 0] == jogo[1, 1] && jogo[1, 1] == jogo[2, 2] ||
                 jogo[0, 2] == jogo[1, 1] && jogo[1, 1] == jogo[2, 0])
             {
@@ -277,9 +282,8 @@ namespace JogoDaVelha
                 Console.WriteLine($"{jogo[i, 0]} | {jogo[i, 1]} | {jogo[i, 2]}");
                 if ((i + 1) < 3)
                 {
-                    Console.WriteLine("---------------");
+                    Console.WriteLine("----------");
                 }
-                Console.WriteLine();
             }
         }
     }
